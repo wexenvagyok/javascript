@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Növekvő és csökkenő négyzet</title>
+  <style>
+    #square {
+      width: 20px;
+      height: 20px;
+      background-color: blue;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div id="square">1</div>
+
+<script>
+  let size = 20; // Kezdeti méret size = pixel
+  let count = 1;
+  let increasing = true;
+  const square = document.getElementById('square');
+
+  setInterval(function() {
+    if (increasing) {
+      if (count < 100) {
+        size += 1;
+        count++;
+        square.style.width = size + "px";
+        square.style.height = size + "px";
+        square.textContent = count;
+      } else {
+        increasing = false;
+      }
+    } else {
+      if (count > 1) {
+        size -= 1;
+        count--;
+        square.style.width = size + "px";
+        square.style.height = size + "px";
+        square.textContent = count;
+      } else {
+        increasing = true;
+      }
+    }
+  }, 20); // <-- ennyi MS-enként. 1000 ms = 1 mp 
+</script>
+
+</body>
+</html>
