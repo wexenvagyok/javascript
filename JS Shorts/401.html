@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401</title>
+</head>
+
+<body>
+    <form style="text-align: center;">
+        <input id="elso" type="number">
+        <input id="kettedik" type="number">
+        <button id="start" type="button" onclick="fussLe()">Start</button>
+        <p id="eredmeny">szovegide</p>
+    </form>
+    <script>
+        function fussLe() {
+            let elso = parseInt(document.getElementById("elso").value)
+            let kettedik = parseInt(document.getElementById("kettedik").value)
+
+            if (elso > kettedik) {
+                document.getElementById("eredmeny").innerHTML = "Az első szám nagyobb.";
+            }
+            else if (elso == kettedik) {
+                document.getElementById("eredmeny").innerHTML = "A két szám egyenlő.";
+            }
+            else {
+                document.getElementById("eredmeny").innerHTML = "A második szám nagyobb.";
+            }
+        }
+    </script>
+</body>
+
+</html>
