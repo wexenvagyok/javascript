@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busz Kijelző</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: 'DotGothic16', sans-serif;
+        }
+        .display {
+            background-color: black;
+            color: #ffcc00;
+            text-align: left;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            font-size: 40px;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 5px rgba(255, 204, 0, 0.8);
+            width: 80%;
+            display: flex;
+            align-items: center;
+        }
+        .route-number {
+            font-size: 60px;
+            margin-right: 20px;
+        }
+        .route-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        input {
+            font-family: 'DotGothic16', sans-serif;
+            font-size: 20px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="display" id="busDisplay">
+        <div class="route-number" id="routeNumber">☹</div>
+        <div class="route-info">
+            <div id="departure">NEM SZÁLLÍT UTASOKAT</div>
+            <div id="destination"></div>
+        </div>
+    </div>
+    <form id="busForm">
+        <div class="form-group">
+            <label for="route">Járatszám:</label>
+            <input type="text" id="route" value="">
+        </div>
+        <div class="form-group">
+            <label for="departureInput">Kiindulópontok (vesszővel elválasztva):</label>
+            <input type="text" id="departureInput" value="">
+        </div>
+        <div class="form-group">
+            <label for="destinationInput">Célállomás:</label>
+            <input type="text" id="destinationInput" value="">
+        </div>
+        <button type="button" onclick="updateDisplay()">Frissítés</button>
+    </form>
+    <script>
+        let departureList = [];
+        let departureIndex = 0;
+        
+        function updateDisplay() {
+            document.getElementById('routeNumber').textContent = document.getElementById('route').value + "▶";
+            departureList = document.getElementById('departureInput').value.split(',').map(item => item.trim());
+            departureIndex = 0;
+            if (departureList.length > 0) {
+                document.getElementById('departure').textContent = departureList[departureIndex] + ' ▶';
+            }
+            document.getElementById('destination').textContent = document.getElementById('destinationInput').value;
+        }
+        //▶
+        function cycleDepartures() {
+            if (departureList.length > 1) {
+                departureIndex = (departureIndex + 1) % departureList.length;
+                document.getElementById('departure').textContent = departureList[departureIndex] + ' ▶';
+            }
+        }
+        
+        setInterval(cycleDepartures, 3000);
+    </script>
+</body>
+</html>
