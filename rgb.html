@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGB Színek</title>
+    <script src="kep.js"></script>
+</head>
+
+<body>
+    <script>
+        class Pixel {
+            constructor(r, g, b) {
+                this.r = r;
+                this.g = g;
+                this.b = b;
+            }
+        }
+
+        const pixelek = [];
+
+        const sorok = adatok.split("\r qn");
+
+        sorok.forEach(elem => {
+            const vag = elem.split(" ");
+            const sor = [];
+            let temp = [];
+            vag.forEach(elem => {
+                temp.push(parseInt(elem));
+                if (temp.length === 3) {
+                    sor.push(new Pixel(temp[0], temp[1], temp[2]))
+                    temp = [];
+                }
+            }),
+        });
+    </script>
+</body>
+
+</html>
