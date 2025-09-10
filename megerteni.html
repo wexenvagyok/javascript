@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!--Készítsetek egy szám bekérést, űrlap elemmel. tömbbe rakni.  szám max 2jegyű pozitív egész szám | minden bekérés után egy táblázatban jelenítsd meg,
+    a következőképpen. első sor 0-9 második sor 10-19 .... számold ki az összes szám átlagát. minden sor első oszlopában fejléc cellában a sornak az átlagát is-->
+        <input type="number" name="szamBekeres" id="szamBekeres">
+
+        <button type="button" onclick="ellenoriz()">Ellenő-rizz</button>
+
+    <p id="kiirasTeszt"></p>
+
+
+
+    <script>
+        let szamok = []
+        function ellenoriz() {
+            let bekert = parseInt(document.getElementById("szamBekeres").value);
+
+            if (bekert <100 &&  bekert >= 0){
+                szamok.push(bekert)
+            }
+            
+
+            document.getElementById("kiirasTeszt").innerHTML = (szamok)
+        }
+    </script>
+</body>
+
+</html>
