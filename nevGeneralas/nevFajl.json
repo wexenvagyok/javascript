@@ -1,0 +1,14 @@
+{
+  "vezeteknevek": [
+    "Bodrogi", "Csicsai", "Tököli", "Csintalan", "Kupás", "Csikász", "Bogyó", "Csobolyó", "Vaddisznó",
+    "Csóré", "Béka", "Borsodi", "Sövény", "Púpos", "Csutak", "Giliszta", "Kukorelly", "Makk", "Pocok", "Tuskó"
+  ],
+  "noi_utonevek": [
+    "Csinszka", "Zorka", "Hanga", "Alita", "Zelina", "Bíborka", "Mirtill", "Zselyke", "Léna", "Zelma",
+    "Zsuzska", "Csilla", "Dzseni", "Zafira", "Rozina", "Jázmin", "Liliána", "Mona", "Tifani", "Lujza"
+  ],
+  "ferfi_utonevek": [
+    "Bátor", "Zeusz", "Milán", "Noel", "Zente", "Zerind", "Árisz", "Előd", "Kolos", "Bendegúz",
+    "Botond", "Zétény", "Csobán", "Dzsulió", "Ramszesz", "Ábel", "Kajetán", "Sovány", "Balan", "Hunor"
+  ]
+}

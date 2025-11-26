@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Véletlenszerű Magyar Nevek</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px;
+            width: 45%;
+            display: inline-block;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="generateBtn">Nevek Generálása</button><br>
+
+    <table id="ferfiTable">
+        <thead>
+            <tr>
+                <th>Férfi Nevek</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <table id="noiTable">
+        <thead>
+            <tr>
+                <th>Női Nevek</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function () {
+            fetch('nevFajl.json')
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    const vezeteknevek = data.vezeteknevek;
+                    const noiUtonevek = data.noi_utonevek;
+                    const ferfiUtonevek = data.ferfi_utonevek;
+
+                    const ferfiNevek = [];
+                    const noiNevek = [];
+
+                    const randomSzam = Math.floor(Math.random() * (20 - 15 + 1)) + 15;
+
+                    for (let i = 0; i < randomSzam; i++) {
+                        const randomVezetek = vezeteknevek[Math.floor(Math.random() * vezeteknevek.length)];
+                        const randomFerfiUto = ferfiUtonevek[Math.floor(Math.random() * ferfiUtonevek.length)];
+                        ferfiNevek.push({ vezetek: randomVezetek, uto: randomFerfiUto });
+
+                        const randomVezetek2 = vezeteknevek[Math.floor(Math.random() * vezeteknevek.length)];
+                        const randomNoiUto = noiUtonevek[Math.floor(Math.random() * noiUtonevek.length)];
+                        noiNevek.push({ vezetek: randomVezetek2, uto: randomNoiUto });
+                    }
+
+                    const ferfiTableBody = document.querySelector('#ferfiTable tbody');
+                    ferfiTableBody.innerHTML = '';
+                    ferfiNevek.forEach(nev => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${nev.vezetek} ${nev.uto}</td>`;
+                        ferfiTableBody.appendChild(row);
+                    });
+
+                    const noiTableBody = document.querySelector('#noiTable tbody');
+                    noiTableBody.innerHTML = '';
+                    noiNevek.forEach(nev => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td>${nev.vezetek} ${nev.uto}</td>`;
+                        noiTableBody.appendChild(row);
+                    });
+                })
+        });
+    </script>
+</body>
+
+</html>
