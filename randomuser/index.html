@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random User</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ+J8tQ6K+Y9kPZhsXzDlnxLO7+XwF6k+MQVR2n0ZCj7xjGR/v8jrWVztuEo" crossorigin="anonymous">
+    <style>
+        #user-card {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: 
+                opacity 1s ease,
+                transform 1s ease,
+                filter 1s ease;
+            background-color: #2e2e2e;
+        }
+
+        #user-card.fade-out {
+            opacity: 0.2;
+            transform: translate(-40px, 40px) scale(0.95); /* bal + le */
+            filter: blur(6px);
+        }
+
+
+        #user-image {
+            border-radius: 50%;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h3, p{
+            color: white;
+        }
+
+        #user-card{
+            background-color: #2e2e2e;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Bootstrap Container -->
+    <div class="container card-container">
+        <div class="col-md-6 col-lg-4">
+            <div id="user-card" class="card p-3">
+                <img id="user-image" src="" alt="User Image" width="100" height="100" class="mb-3">
+                <h3 id="user-name" class="card-title"></h3>
+                <p id="user-email" class="card-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function loadRandomUser() {
+                $.get('https://randomuser.me/api/', function(data) {
+                    const user = data.results[0];
+                    $('#user-image').attr('src', user.picture.large);
+                    $('#user-name').text(user.name.first + ' ' + user.name.last);
+                    $('#user-email').text(user.email);
+                });
+            }
+
+            loadRandomUser();
+
+            $('#user-card').click(function() {
+                $(this).addClass('fade-out');
+                setTimeout(function() {
+                    loadRandomUser();
+                    $('#user-card').removeClass('fade-out');
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
