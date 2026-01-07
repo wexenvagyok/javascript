@@ -34,30 +34,38 @@
                 <label for="numberB" class="form-label">Második szám</label>
                 <input type="number" class="form-control" id="numberB" required>
             </div>
-            <button type="submit" class="btn btn-primary">Számolj</button>
+            <button type="button" class="btn btn-primary muvelet" data-muvelet="osszead">Összead</button>
+			<button type="button" class="btn btn-primary muvelet" data-muvelet="kivon">Kivon</button>
+			<button type="button" class="btn btn-primary muvelet" data-muvelet="szoroz">Szoroz</button>
+
         </form>
 
         <div id="result"></div>
     </div>
 
     <script>
-        $(document).ready(function() {
-            $('#Form').on('submit', function(e) {
-                e.preventDefault();
+        $(document).ready(function () {
+    $('.muvelet').click(function () {
 
-                let a = $('#numberA').val();
-                let b = $('#numberB').val();
+        let a = $('#numberA').val();
+        let b = $('#numberB').val();
+        let muvelet = $(this).data('muvelet');
 
-                $.ajax({
-                    url: 'miniapi.php',
-                    type: 'GET',
-                    data: { a: a, b: b },
-                    success: function(response) {
-                        $('#result').text('Eredmény: ' + response).show();
-                    },
-                });
-            });
+        $.ajax({
+            url: 'miniapi.php',
+            type: 'GET',
+            data: {
+                a: a,
+                b: b,
+                muvelet: muvelet
+            },
+            success: function (response) {
+                $('#result').text('Eredmény: ' + response).show();
+            }
         });
+    });
+});
+
     </script>
 </body>
 </html>
