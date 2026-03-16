@@ -37,8 +37,34 @@
         </div>
     </div>
  </div>    
-</body>
 <footer class="col-12 text-center">
     Nagyatád, 2026.03.16.
 </footer>
+<script>
+    const kepAdat = [];
+    f1();
+    function f1(){
+        fetch("kep.txt")
+        .then(x=>x.text())
+        .then(x=>{
+            //console.log(x);
+            const sorok = x.trim().split("\r\n");
+            sorok.forEach(sor => {
+                kepAdat.push([]);
+                const adatok = sor.split(" ");
+                for (let i=0;i<adatok.length;i+=3){
+                    let pixel = {
+                        r:parseInt(adatok[i]),
+                        g:parseInt(adatok[i+1]),
+                        b:parseInt(adatok[i+2]),
+                    }
+
+                    kepAdat[kepAdat.length-1].push(pixel);
+                }
+            });
+            console.log(sorok)
+        });
+    }
+</script>
+</body>
 </html>
