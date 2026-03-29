@@ -1,119 +1,106 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Fájl beolvasása fetch API-val
     fetch('nevek.txt')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('A fájl nem található vagy nem olvasható (HTTP hiba: ' + response.status + ')');
-            }
-            return response.text();
-        })
-        .then(rawData => {
-            processData(rawData);
-        })
+        .then(valasz => valasz.text())
+        .then(szoveg => adatokFeldolgozasa(szoveg));
 });
 
-function processData(rawData) {
-    const lines = rawData.trim().split('\n');
-    let csaladCounts = {};
-    let elsoUtonevCounts = {};
-    let masodikUtonevCounts = {};
-    let utonevCounts = {}; 
-    let fullNCounts = {}; 
-    let csaladOsztaly = {};
+function adatokFeldolgozasa(szoveg) {
+    const sorok = szoveg.trim().split('\n');
+    
+    const csaladnevek = {};
+    const elsoUtonevek = {};
+    const masodikUtonevek = {};
+    const utonevek = {}; 
+    const teljesNevek = {}; 
+    const csaladOsztalyok = {};
 
-    lines.forEach(line => {
-        let parts = line.split('\t');
-        if(parts.length < 2) return;
-        let osztaly = parts[0].trim();
-        let nameStr = parts[1].trim();
-        let nameParts = nameStr.split(' ').filter(x => x.trim() !== '');
+    sorok.forEach(sor => {
+        const reszek = sor.split('\t');
+        if (reszek.length < 2) return;
         
-        let c = nameParts[0];
-        let u1 = nameParts.length > 1 ? nameParts[1] : null;
-        let u2 = nameParts.length > 2 ? nameParts[2] : null;
-
-        // Családnevek
-        csaladCounts[c] = (csaladCounts[c] || 0) + 1;
+        const osztaly = reszek[0].trim();
+        const nevReszek = reszek[1].trim().split(' ').filter(resz => resz !== '');
         
-        // Osztályok tárolása
-        if (!csaladOsztaly[c]) csaladOsztaly[c] = new Set();
-        csaladOsztaly[c].add(osztaly);
+        const csaladnev = nevReszek[0];
+        const utonev1 = nevReszek[1] || null;
+        const utonev2 = nevReszek[2] || null;
 
-        // Utónevek & "1 utóneves" teljes nevek
-        if (u1) {
-            elsoUtonevCounts[u1] = (elsoUtonevCounts[u1] || 0) + 1;
-            utonevCounts[u1] = (utonevCounts[u1] || 0) + 1;
-            let p1 = c + " " + u1;
-            fullNCounts[p1] = (fullNCounts[p1] || 0) + 1;
-        }
-        if (u2) {
-            masodikUtonevCounts[u2] = (masodikUtonevCounts[u2] || 0) + 1;
-            utonevCounts[u2] = (utonevCounts[u2] || 0) + 1;
-            let p2 = c + " " + u2;
-            fullNCounts[p2] = (fullNCounts[p2] || 0) + 1;
-        }
+        csaladnevek[csaladnev] = (csaladnevek[csaladnev] || 0) + 1;
+        
+        if (!csaladOsztalyok[csaladnev]) csaladOsztalyok[csaladnev] = new Set();
+        csaladOsztalyok[csaladnev].add(osztaly);
+
+        const utonevRogzites = (utonev, celLista) => {
+            if (!utonev) return;
+            celLista[utonev] = (celLista[utonev] || 0) + 1;
+            utonevek[utonev] = (utonevek[utonev] || 0) + 1;
+            
+            const teljesNev = `${csaladnev} ${utonev}`;
+            teljesNevek[teljesNev] = (teljesNevek[teljesNev] || 0) + 1;
+        };
+
+        utonevRogzites(utonev1, elsoUtonevek);
+        utonevRogzites(utonev2, masodikUtonevek);
     });
 
-    const getTop = (dict) => {
-        const entries = Object.entries(dict);
-        if (entries.length === 0) return ["-", 0];
-        return entries.sort((a,b) => b[1] - a[1])[0];
+    const leggyakoribbKereses = (lista) => {
+        const elemek = Object.entries(lista);
+        return elemek.length ? elemek.reduce((max, aktualis) => aktualis[1] > max[1] ? aktualis : max) : ["-", 0];
     };
     
-    // Top Eredmények beállítása
-    document.getElementById('stat-csalad').innerHTML = `${getTop(csaladCounts)[0]} (${getTop(csaladCounts)[1]} db)`;
-    document.getElementById('stat-elso').innerHTML = `${getTop(elsoUtonevCounts)[0]} (${getTop(elsoUtonevCounts)[1]} db)`;
-    document.getElementById('stat-masodik').innerHTML = `${getTop(masodikUtonevCounts)[0]} (${getTop(masodikUtonevCounts)[1]} db)`;
-    document.getElementById('stat-utonev').innerHTML = `${getTop(utonevCounts)[0]} (${getTop(utonevCounts)[1]} db)`;
+    const htmlBeallitas = (id, html) => document.getElementById(id).innerHTML = html;
 
-    // 3 Leggyakoribb (1 utónévvel)
-    const sortedFullN = Object.entries(fullNCounts).sort((a,b) => b[1] - a[1]);
-    const top3Html = sortedFullN.slice(0, 3).map(x => `<li class="list-group-item d-flex justify-content-between align-items-center">${x[0]}<span class="badge bg-secondary rounded-pill">${x[1]}</span></li>`).join('');
-    document.getElementById('stat-top3-nevek').innerHTML = top3Html;
+    const topCsalad = leggyakoribbKereses(csaladnevek);
+    const topElso = leggyakoribbKereses(elsoUtonevek);
+    const topMasodik = leggyakoribbKereses(masodikUtonevek);
+    const topUtonev = leggyakoribbKereses(utonevek);
 
-    // Legritkább nevek
-    const rarestFullN = sortedFullN.filter(x => x[1] === 1).map(x => x[0]).sort((a, b) => a.localeCompare(b, 'hu'));
-    document.getElementById('stat-legritkabb').innerHTML = rarestFullN.join(', ');
+    htmlBeallitas('stat-csalad', `${topCsalad[0]} (${topCsalad[1]} db)`);
+    htmlBeallitas('stat-elso', `${topElso[0]} (${topElso[1]} db)`);
+    htmlBeallitas('stat-masodik', `${topMasodik[0]} (${topMasodik[1]} db)`);
+    htmlBeallitas('stat-utonev', `${topUtonev[0]} (${topUtonev[1]} db)`);
 
-    // Családnevek és osztályaik (>= 3)
-    const resOszt = Object.entries(csaladOsztaly)
-        .filter(x => csaladCounts[x[0]] >= 3)
-        .sort((a, b) => a[0].localeCompare(b[0], 'hu'))
-        .map(x => `<li class="list-group-item"><strong>${x[0]}</strong> (${csaladCounts[x[0]]} diák): <span class="text-secondary">${Array.from(x[1]).sort().join(', ')}</span></li>`);
-    document.getElementById('stat-osztalyok').innerHTML = resOszt.join('');
-
-    // Táblázatok kitöltése
-    const tbodyCsalad = document.querySelector('#tbl-csaladnevek tbody');
-    tbodyCsalad.innerHTML = ''; // Előző adatok törlése biztos ami biztos
-    Object.entries(csaladCounts).sort((a,b) => b[1] - a[1]).forEach(([nev, db]) => {
-        tbodyCsalad.innerHTML += `<tr><td>${nev}</td><td>${db}</td></tr>`;
-    });
-
-    const tbodyUtonev = document.querySelector('#tbl-utonevek tbody');
-    tbodyUtonev.innerHTML = '';
-    Object.entries(utonevCounts).sort((a,b) => b[1] - a[1]).forEach(([nev, db]) => {
-        tbodyUtonev.innerHTML += `<tr><td>${nev}</td><td>${db}</td></tr>`;
-    });
-}
-
-// Táblázat rendező logika
-window.sortDirs = {};
-window.sortTable = function(tableId, colIdx, type) {
-    const table = document.getElementById(tableId);
-    const tbody = table.tBodies[0];
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-    const dirId = tableId + colIdx;
-    const dir = window.sortDirs[dirId] === 'asc' ? 'desc' : 'asc';
-    window.sortDirs[dirId] = dir;
+    const rendezettTeljesNevek = Object.entries(teljesNevek).sort((a, b) => b[1] - a[1]);
     
-    rows.sort((a, b) => {
-        let v1 = a.cells[colIdx].innerText;
-        let v2 = b.cells[colIdx].innerText;
-        if (type === 'num') {
-            return dir === 'asc' ? parseInt(v1) - parseInt(v2) : parseInt(v2) - parseInt(v1);
-        } else {
-            return dir === 'asc' ? v1.localeCompare(v2, 'hu') : v2.localeCompare(v1, 'hu');
+    const top3Html = rendezettTeljesNevek.slice(0, 3)
+        .map(nev => `<li class="list-group-item d-flex justify-content-between align-items-center">${nev[0]}<span class="badge bg-secondary rounded-pill">${nev[1]}</span></li>`)
+        .join('');
+    htmlBeallitas('stat-top3-nevek', top3Html);
+
+    const ritkaNevek = rendezettTeljesNevek.filter(nev => nev[1] === 1)
+        .map(nev => nev[0])
+        .sort((a, b) => a.localeCompare(b, 'hu'))
+        .join(', ');
+    htmlBeallitas('stat-legritkabb', ritkaNevek);
+
+    const osztalyokHtml = Object.entries(csaladOsztalyok)
+        .filter(elem => csaladnevek[elem[0]] >= 3)
+        .sort((a, b) => a[0].localeCompare(b[0], 'hu'))
+        .map(elem => `<li class="list-group-item"><strong>${elem[0]}</strong> (${csaladnevek[elem[0]]} diák): <span class="text-secondary">${Array.from(elem[1]).sort().join(', ')}</span></li>`)
+        .join('');
+    htmlBeallitas('stat-osztalyok', osztalyokHtml);
+
+    const tablazatKeszites = (szelektor, adatok) => {
+        const tablazatTorzs = document.querySelector(`${szelektor} tbody`);
+        
+        const rendezhetoTomb = [];
+        for (const nev in adatok) {
+            rendezhetoTomb.push({ 
+                nev: nev, 
+                darab: adatok[nev] 
+            });
         }
-    });
-    rows.forEach(r => tbody.appendChild(r));
+        
+        rendezhetoTomb.sort((a, b) => b.darab - a.darab);
+        
+        let htmlTartalom = '';
+        for (const elem of rendezhetoTomb) {
+            htmlTartalom += `<tr><td>${elem.nev}</td><td>${elem.darab}</td></tr>`;
+        }
+        
+        tablazatTorzs.innerHTML = htmlTartalom;
+    };
+
+    tablazatKeszites('#tbl-csaladnevek', csaladnevek);
+    tablazatKeszites('#tbl-utonevek', utonevek);
 }
