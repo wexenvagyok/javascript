@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row col-4">
+            <h3>2. feladat</h3>
+            <p>dobások száma: <span id="f2D"></span></p>
+            <p>ösvények száma: <span id="f2O"></span></p>
+            <button type="button" onclick="f2()" class="btn btn-primary">felkérdezés</button>
+        </div>
+        <div class="row col-4">
+            <h3>3. feladat</h3>
+            <p>Az egyik leghosszabb a(z) <span id="maxHossz"></span></p>
+        </div>
+    </div>
+</body>
+<script>
+    let filename = "dobasok.txt";
+    let adat = [];
+    let osvenyek = [];
+
+//1. feladat
+    $.get(filename, data => {
+        let adatok = data.split(" ").map(x=>parseInt(x));
+        dobasok = adatok;
+});
+
+    $.get("osvenyek.txt", data => {
+            let adatok = data.split("\r\n");
+            adatok.pop();
+            osvenyek = adatok;
+});
+
+function f2(){
+
+    $("#f2D").html(dobasok.length);
+    $("#f2O").html(osvenyek.length)
+}
+
+function f3(){
+    let maxHossz = Math.max(...osvenyek.map(x=>x.length));
+    let index = osvenyek.map(x=>x.length).indexOf(maxHossz);
+
+
+}
+</script>
+</html>
