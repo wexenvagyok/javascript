@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Halo</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+
+<style>
+    *{
+        text-align: center;
+    }
+</style>
+<body>
+
+<h3>1. feladat</h3>
+<p id="eredmeny1"></p>
+
+<h3>2. feladat</h3>
+<input type="number" id="a" placeholder="A érték">
+<input type="number" id="b" placeholder="B érték"><br>
+<button type="button" id="masodik">Második feladat</button>
+<p id="eredmeny2"></p>
+
+<h3>3. feladat</h3>
+<input type="number" id="faktszam" min="1" max="20"><br>
+<button type="button" id="harmadik">Harmadik feladat</button>
+<p id="eredmeny3"></p>
+
+
+<script>
+function kuldes() {
+    $.ajax({
+        url: "https://pepa.hu/api/matekos/lorem/3",
+        success: function(result) {
+            const kiir = result.szoveg
+                .split(" ")
+                .slice(0, 3)
+                .join(" ");
+
+            $("#eredmeny1").text(kiir);
+        }
+    });
+}
+
+kuldes();
+
+
+function kuldes2() {
+    const a = $("#a").val();
+    const b = $("#b").val();
+    $.ajax({
+        url: "https://pepa.hu/api/matekos/szorzat/" + a + "/" + b,
+        success: function(result) {
+            $("#eredmeny2").text("eredmény: "+result.eredmeny);
+        }
+    });
+}
+
+
+$("#masodik").on("click", function () {
+    kuldes2();
+});
+
+function kuldes3() {
+    const fakt = $("#faktszam").val();
+
+    $.ajax({
+        url: "https://pepa.hu/api/matekos/fakt/" + fakt,
+        success: function(result) {
+            $("#eredmeny3").text("eredmény: "+result.eredmeny);
+        }
+    });
+}
+
+
+$("#harmadik").on("click", function () {
+    kuldes3();
+});
+
+</script>
+</body>
+</html>
